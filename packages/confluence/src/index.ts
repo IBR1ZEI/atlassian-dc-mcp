@@ -141,6 +141,40 @@ server.tool(
   }
 );
 
+server.tool(
+  "confluence_uploadAttachment",
+  "Upload a local file as an attachment to a Confluence content (page)",
+  confluenceToolSchemas.uploadAttachment,
+  async ({ contentId, filePath, filename, comment, minorEdit, hidden, allowDuplicated, versionIfExists }) => {
+    const result = await confluenceService.uploadAttachment(
+      contentId,
+      filePath,
+      filename,
+      comment,
+      minorEdit,
+      hidden,
+      allowDuplicated,
+      versionIfExists,
+    );
+    return formatToolResponse(result);
+  }
+);
+
+server.tool(
+  "confluence_downloadAttachment",
+  `Download one or more attachments from a Confluence content (page) in the ${confluenceInstanceType}. Can save to a local path and/or return the file content inline (base64 or text). Useful for inspecting a file or moving it elsewhere (e.g. re-uploading to a Jira issue).`,
+  confluenceToolSchemas.downloadAttachment,
+  async ({ contentId, filename, saveDir, savePath, returnContent, maxInlineBytes }) => {
+    const result = await confluenceService.downloadAttachmentFromContent(contentId, filename, {
+      saveDir,
+      savePath,
+      returnContent,
+      maxInlineBytes,
+    });
+    return formatToolResponse(result);
+  }
+);
+
 server.tool('confluence_searchSpace',
   `Search for spaces in ${confluenceInstanceType}`,
   confluenceToolSchemas.searchSpaces,
