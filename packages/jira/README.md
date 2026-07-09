@@ -115,6 +115,7 @@ Alternatively, you can use `JIRA_API_BASE_PATH` instead of `JIRA_HOST` to specif
 - Get issue comments
 - Create and update issues
 - Add comments to issues
+- Link and unlink issues
 
 ## Setup
 
@@ -269,3 +270,26 @@ Parameters:
 - `savePath` (string, optional): Absolute local file path to save a single attachment to. Overrides `saveDir`.
 - `returnContent` (`none` | `base64` | `text`, optional): Whether to embed the file bytes in the response. Defaults to `none`. Combine with `saveDir`/`savePath` to also save to disk.
 - `maxInlineBytes` (number, optional): Maximum bytes to embed inline when `returnContent` is `base64`/`text`. Larger files are saved (if a path is given) but not embedded. Defaults to 1 MiB.
+
+#### 11. jira_getIssueLinkTypes
+
+Get the list of available issue link types (e.g., "Blocks", "Relates", "Duplicate") in the JIRA Data Center edition instance. Use this to discover valid link type names before calling `jira_linkIssues`.
+
+Parameters: none
+
+#### 12. jira_linkIssues
+
+Create a link between two JIRA issues in the JIRA Data Center edition instance.
+
+Parameters:
+- `inwardIssueKey` (string, required): Key of the inward issue — the one the inward link description applies to (e.g., the issue that "is blocked by"). Example: "PROJECT-123"
+- `outwardIssueKey` (string, required): Key of the outward issue — the one the outward link description applies to (e.g., the issue that "blocks"). Example: "PROJECT-456"
+- `linkType` (string, required): Name of the issue link type to apply (e.g., "Blocks", "Relates"). Use `jira_getIssueLinkTypes` to discover valid names for this JIRA installation.
+- `comment` (string, optional): Comment added to the inward issue when the link is created, in JIRA Wiki Markup
+
+#### 13. jira_unlinkIssues
+
+Delete an existing link between two JIRA issues in the JIRA Data Center edition instance.
+
+Parameters:
+- `linkId` (string, required): The id of the issue link to delete. Link ids are found in the `issuelinks` field of an issue (retrieve it via `jira_getIssue` with the `issuelinks` field).
